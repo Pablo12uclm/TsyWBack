@@ -1,0 +1,16 @@
+edu\uclm\esi\juegos\App.class
+edu\uclm\esi\juegos\entities\User.class
+edu\uclm\esi\juegos\ws\WebSocketConfig.class
+edu\uclm\esi\juegos\ws\SocketHandler.class
+edu\uclm\esi\auxi\Manager.class
+edu\uclm\esi\juegos\dto\ApiResponse.class
+edu\uclm\esi\juegos\entities\Token.class
+edu\uclm\esi\juegos\http\Client.class
+edu\uclm\esi\juegos\services\UserService.class
+edu\uclm\esi\juegos\http\GlobalExceptionHandler.class
+edu\uclm\esi\juegos\dao\UserDAO.class
+edu\uclm\esi\juegos\services\Connect4Service.class
+edu\uclm\esi\juegos\exhandling\UserAlreadyExistsException.class
+edu\uclm\esi\juegos\http\Connect4Controller.class
+edu\uclm\esi\juegos\http\UserController.class
+edu\uclm\esi\auxi\Manager$ManagerHolder.class
