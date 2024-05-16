@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.hash.Hashing;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
@@ -56,5 +58,17 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public User findUserById(Long id) {
         return userDAO.findById(id).orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public User login(String email, String password) throws Exception {
+        User user = userDAO.findByEmail(email);
+        if (user == null || !user.getPassword().equals(Hashing.sha256()
+                .hashString(password, StandardCharsets.UTF_8)
+                .toString())) {
+            throw new Exception("Invalid email or password");
+        }
+        return user;
     }
 }

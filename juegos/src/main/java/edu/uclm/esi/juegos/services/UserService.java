@@ -10,4 +10,5 @@ public interface UserService {
     User findUserByEmail(String email);
     User findUserById(Long id);
     List<User> getAllUsers();
+    User login(String email, String password) throws Exception; //
 }

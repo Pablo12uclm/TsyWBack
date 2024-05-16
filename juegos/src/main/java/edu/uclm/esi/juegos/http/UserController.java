@@ -10,9 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin(origins = "http://localhost:4200") // Agrega esta línea para permitir CORS
+
 public class UserController {
 
     private final UserService userService;
@@ -37,6 +38,20 @@ public class UserController {
         } catch (Exception e) {
             ApiResponse errorResponse = new ApiResponse("An unexpected error occurred.", null, false);
             return ResponseEntity.internalServerError().body(errorResponse);
+        }
+    }
+    
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse> loginUser(@RequestBody Map<String, String> loginData) {
+        String email = loginData.get("email");
+        String password = loginData.get("password");
+        try {
+            User user = userService.login(email, password);
+            ApiResponse response = new ApiResponse("User logged in successfully.", user, true);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ApiResponse errorResponse = new ApiResponse(e.getMessage(), null, false);
+            return ResponseEntity.status(401).body(errorResponse);
         }
     }
 
