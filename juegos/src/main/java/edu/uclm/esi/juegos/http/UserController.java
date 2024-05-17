@@ -9,11 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpSession;
 import java.util.Map;
+
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "http://localhost:4200") // Agrega esta línea para permitir CORS
-
 public class UserController {
 
     private final UserService userService;
@@ -40,19 +41,38 @@ public class UserController {
             return ResponseEntity.internalServerError().body(errorResponse);
         }
     }
-    
+
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse> loginUser(@RequestBody Map<String, String> loginData) {
+    public ResponseEntity<ApiResponse> loginUser(@RequestBody Map<String, String> loginData, HttpSession session) {
         String email = loginData.get("email");
         String password = loginData.get("password");
         try {
             User user = userService.login(email, password);
+            session.setAttribute("user", user);
             ApiResponse response = new ApiResponse("User logged in successfully.", user, true);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             ApiResponse errorResponse = new ApiResponse(e.getMessage(), null, false);
             return ResponseEntity.status(401).body(errorResponse);
         }
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<ApiResponse> logoutUser(HttpSession session) {
+        session.invalidate();
+        ApiResponse response = new ApiResponse("User logged out successfully.", null, true);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/current")
+    public ResponseEntity<ApiResponse> getCurrentUser(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            ApiResponse errorResponse = new ApiResponse("No user logged in", null, false);
+            return ResponseEntity.status(401).body(errorResponse);
+        }
+        ApiResponse response = new ApiResponse("Current user retrieved successfully.", user, true);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")

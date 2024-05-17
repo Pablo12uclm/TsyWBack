@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.hash.Hashing;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-
 @Service
 public class UserServiceImpl implements UserService {
 
