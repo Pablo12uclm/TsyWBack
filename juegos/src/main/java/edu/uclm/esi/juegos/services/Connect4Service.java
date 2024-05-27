@@ -1,13 +1,15 @@
 package edu.uclm.esi.juegos.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.stereotype.Service;
 import edu.uclm.esi.juegos.entities.Move;
+import org.springframework.stereotype.Service;
 
 @Service
 public class Connect4Service {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private ObjectMapper objectMapper = new ObjectMapper();
+    private String[][] board = new String[6][7];
+    private int totalMoves = 0;
 
     public boolean checkWinner(String[][] board, int lastRow, int lastCol) {
         String player = board[lastRow][lastCol];
@@ -40,10 +42,6 @@ public class Connect4Service {
     }
 
     public String processMove(Move move) throws Exception {
-        String[][] board = new String[6][7];
-        int totalMoves = 0;
-        // Suponiendo que board y totalMoves se mantienen actualizados externamente
-
         if (board[move.getRowNum()][move.getCol()] == null) {
             board[move.getRowNum()][move.getCol()] = move.getPlayer();
             totalMoves++;
@@ -57,6 +55,14 @@ public class Connect4Service {
             }
         }
         return objectMapper.writeValueAsString(new MoveResponse("invalid", null));
+    }
+
+    public String[][] getBoard() {
+        return board;
+    }
+
+    public void setBoard(String[][] board) {
+        this.board = board;
     }
 
     class MoveResponse {

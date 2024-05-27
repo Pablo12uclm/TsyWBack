@@ -11,13 +11,22 @@ public class Move {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
-    private int rowNum;
+    private int rowNum; // Renombrado de 'row' a 'rowNum'
     private int col;
     private String player;
 
     @ManyToOne
     private Game game;
+
+    // Constructor por defecto
+    public Move() {}
+
+    // Constructor con parámetros
+    public Move(int rowNum, int col, String player) {
+        this.rowNum = rowNum;
+        this.col = col;
+        this.player = player;
+    }
 
     // Getters y setters
     public Long getId() {
@@ -60,5 +69,3 @@ public class Move {
         this.game = game;
     }
 }
-
-
