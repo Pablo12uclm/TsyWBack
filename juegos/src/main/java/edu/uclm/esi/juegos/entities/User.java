@@ -28,6 +28,9 @@ public class User {
     @Nonnull
     private String password;
 
+    // Constructor por defecto
+    public User() {}
+    
     // Getters y setters
     public Long getId() {
         return id;

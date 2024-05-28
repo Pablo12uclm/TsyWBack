@@ -1,7 +1,7 @@
 package edu.uclm.esi.juegos.http;
 
-import edu.uclm.esi.juegos.services.UserService;
 import edu.uclm.esi.juegos.entities.User;
+import edu.uclm.esi.juegos.services.UserService;
 import edu.uclm.esi.juegos.dto.ApiResponse;
 import edu.uclm.esi.juegos.exhandling.UserAlreadyExistsException;
 import edu.uclm.esi.juegos.exhandling.UserNotFoundException;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpSession;
 import java.util.Map;
+
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")

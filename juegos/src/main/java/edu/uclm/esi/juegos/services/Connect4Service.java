@@ -1,15 +1,47 @@
 package edu.uclm.esi.juegos.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.uclm.esi.juegos.entities.Game;
 import edu.uclm.esi.juegos.entities.Move;
+import edu.uclm.esi.juegos.entities.User;
+import edu.uclm.esi.juegos.dao.GameDAO;
+import edu.uclm.esi.juegos.dao.MoveDAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class Connect4Service {
 
+    @Autowired
+    private GameDAO gameDAO;
+
+    @Autowired
+    private MoveDAO moveDAO;
+
     private ObjectMapper objectMapper = new ObjectMapper();
     private String[][] board = new String[6][7];
     private int totalMoves = 0;
+    private User waitingUser = null;
+
+    public synchronized Game joinGame(User user) throws Exception {
+        if (user == null || user.getUsername() == null) {
+            throw new Exception("User object is null or username is null");
+        }
+        System.out.println("joinGame called with user: " + user.getUsername());
+
+        if (waitingUser == null) {
+            waitingUser = user;
+            throw new Exception("Waiting for another player to join.");
+        } else {
+            Game game = new Game();
+            game.setPlayer1(waitingUser.getUsername());
+            game.setPlayer2(user.getUsername());
+            game.setFinished(false);
+            gameDAO.save(game);
+            waitingUser = null;
+            return game;
+        }
+    }
 
     public boolean checkWinner(String[][] board, int lastRow, int lastCol) {
         String player = board[lastRow][lastCol];
