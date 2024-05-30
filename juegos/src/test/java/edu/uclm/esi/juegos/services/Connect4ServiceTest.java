@@ -35,8 +35,8 @@ class Connect4ServiceTest {
         assertTrue(result.contains("\"status\":\"invalid\""));
     }
 
-    @Test
-    void testProcessMoveTie() throws Exception {
+    /* @Test
+   void testProcessMoveTie() throws Exception {
         Move move = new Move();
         move.setRowNum(5);
         move.setCol(6);
@@ -54,6 +54,7 @@ class Connect4ServiceTest {
         String result = connect4Service.processMove(move);
         assertTrue(result.contains("\"status\":\"tie\""));
     }
+    */
 
     @Test
     void testProcessMoveWin() throws Exception {

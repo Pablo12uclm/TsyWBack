@@ -9,6 +9,8 @@ import edu.uclm.esi.juegos.dao.MoveDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+
 @Service
 public class Connect4Service {
 
@@ -74,20 +76,41 @@ public class Connect4Service {
     }
 
     public String processMove(Move move) throws Exception {
-        if (board[move.getRowNum()][move.getCol()] == null) {
-            board[move.getRowNum()][move.getCol()] = move.getPlayer();
-            totalMoves++;
-            boolean isWinner = checkWinner(board, move.getRowNum(), move.getCol());
-            if (isWinner) {
-                return objectMapper.writeValueAsString(new MoveResponse("win", move.getPlayer()));
-            } else if (checkTie(board, totalMoves)) {
-                return objectMapper.writeValueAsString(new MoveResponse("tie", null));
-            } else {
-                return objectMapper.writeValueAsString(new MoveResponse("continue", null));
-            }
+        System.out.println("Processing move: " + move);
+        int row = move.getRowNum();
+        int col = move.getCol();
+        String player = move.getPlayer();
+
+        System.out.println("Board state before move:");
+        for (String[] rowState : board) {
+            System.out.println(Arrays.toString(rowState));
         }
-        return objectMapper.writeValueAsString(new MoveResponse("invalid", null));
+
+        if (row < 0 || row >= board.length || col < 0 || col >= board[0].length || board[row][col] != null) {
+            System.out.println("Invalid move detected: (" + row + ", " + col + ")");
+            return objectMapper.writeValueAsString(new MoveResponse("invalid", null, null));
+        }
+
+        board[row][col] = player;
+        totalMoves++;
+
+        System.out.println("Board state after move:");
+        for (String[] rowState : board) {
+            System.out.println(Arrays.toString(rowState));
+        }
+
+        boolean isWinner = checkWinner(board, row, col);
+        if (isWinner) {
+            return objectMapper.writeValueAsString(new MoveResponse("win", player, null));
+        } else if (checkTie(board, totalMoves)) {
+            return objectMapper.writeValueAsString(new MoveResponse("tie", null, null));
+        } else {
+            // Aquí se asegura que la respuesta "continue" siempre tiene un campo content no nulo.
+            String content = objectMapper.writeValueAsString(move);
+            return objectMapper.writeValueAsString(new MoveResponse("continue", player, content));
+        }
     }
+
 
     public String[][] getBoard() {
         return board;
@@ -97,13 +120,15 @@ public class Connect4Service {
         this.board = board;
     }
 
-    class MoveResponse {
+    static class MoveResponse {
         private String status;
         private String player;
+        private String content;  // Añadir campo content
 
-        public MoveResponse(String status, String player) {
+        public MoveResponse(String status, String player, String content) {
             this.status = status;
             this.player = player;
+            this.content = content;
         }
 
         public String getStatus() {
@@ -120,6 +145,23 @@ public class Connect4Service {
 
         public void setPlayer(String player) {
             this.player = player;
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
+
+        @Override
+        public String toString() {
+            return "MoveResponse{" +
+                    "status='" + status + '\'' +
+                    ", player='" + player + '\'' +
+                    ", content='" + content + '\'' +
+                    '}';
         }
     }
 }
